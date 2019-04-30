@@ -36,6 +36,17 @@ Estimate of time needed to complete: 3 hours
 
 Start time: 9:05
 
+Finish time: 10:30
+
+Actual time needed to complete: 1.5 hours
+
+###################
+Number and name of feature: Weather
+
+Estimate of time needed to complete: 3 hours
+
+Start time: 10:30
+
 Finish time: 12:00
 
-Actual time needed to complete: 3 hours
+Actual time needed to complete: 1.5 hours
