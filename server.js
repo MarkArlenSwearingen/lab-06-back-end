@@ -9,9 +9,14 @@ const app = express();
 app.use(cors());
 
 app.get('/location', (request, response) => {
-  let locationData = request.query.data;
-  let latLong = convertLatLong(locationData);
-  response.send(latLong);
+  try {
+    let locationData = request.query.data;
+    let latLong = convertLatLong(locationData);
+    response.send(latLong);
+  } catch(e) {
+    let message = handleErrors(e);
+    response.status(message.status).send(message.responseText);
+  }
 });
 
 function convertLatLong(query){
@@ -26,22 +31,27 @@ function convertLatLong(query){
 }
 
 app.get('/weather', (request, response) =>{
-  let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  let month = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  let darksky = require('./data/darksky.json');
-  let result = [];
+  try {
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let month = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let darksky = require('./data/darksky.json');
+    let result = [];
 
-  darksky.daily.data.forEach(object => {
-    let date = new Date(object.time * 1000);
-    let time = [days[date.getDay()], month[date.getMonth()], date.getDate(), date.getFullYear()].join(' ');
-    let forecast = object.summary;
+    darksky.daily.data.forEach(object => {
+      let date = new Date(object.time * 1000);
+      let time = [days[date.getDay()], month[date.getMonth()], date.getDate(), date.getFullYear()].join(' ');
+      let forecast = object.summary;
 
-    let info = getWeather(forecast, time);
+      let info = getWeather(forecast, time);
 
-    result.push(info);
-  });
+      result.push(info);
+    });
 
-  response.send(result);
+    response.send(result);
+  } catch(e) {
+    let message = handleErrors(e);
+    response.status(message.status).send(message.responseText);
+  }
 });
 
 function getWeather(forecast, time){
@@ -51,6 +61,14 @@ function getWeather(forecast, time){
   };
 
   return weatherInfo;
+}
+
+function handleErrors() {
+  let errObj = {
+    status: 500,
+    responseText: 'Sorry something went wrong',
+  };
+  return errObj;
 }
 
 app.listen(PORT);
