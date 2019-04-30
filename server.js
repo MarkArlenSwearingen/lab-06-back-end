@@ -25,4 +25,25 @@ function convertLatLong(query){
   return location;
 }
 
+app.get('/weather', (request, response) =>{
+  let weather = getWeather(request.query.latitude, request.query.longitude);
+  return weather;
+});
+
+function getWeather(lat, lng){
+  let darksky = require('./data/darksky.json');
+  let result = [];
+
+  darksky.daily.data.forEach(object => {
+    let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let month = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let date = new Date(object.time);
+    let time = [days[date.getDay()], month[date.getMonth()], date.getDate(), date.getFullYear()].join(' ');
+
+    result.push({forecast: object.summary, time: time});
+  });
+  
+  return result;
+}
+
 app.listen(PORT);
